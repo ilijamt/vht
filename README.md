@@ -8,7 +8,7 @@ Take care when using the **tree** and **search** functionality as if there are a
 
 ## Badges
 
-[![Release](https://img.shields.io/github/release/ilijamt/vht.svg?style=for-the-badge)](https://github.com/goreleaser/goreleaser/releases/latest)
+[![Release](https://img.shields.io/github/release/ilijamt/vht.svg?style=for-the-badge)](https://github.com/ilijamt/vht/releases/latest)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
 
 ## Help
@@ -28,6 +28,7 @@ Available Commands:
   search      Search in the secrets data
   tree        Print out a list of all the secrets in a path
   verify      Verify connection to Vault
+  version     Shows the version of the application
 
 Flags:
   -h, --help   help for vht
