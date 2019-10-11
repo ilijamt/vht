@@ -12,7 +12,7 @@ var treeCmd = &cobra.Command{
 	Short: "Print out a list of all the secrets in a path",
 	Long:  `Print out a list of all the secrets in a path recursively`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		client, err := getVaultClient()
+		client, err := vault.Client()
 		if err != nil {
 			return err
 		}

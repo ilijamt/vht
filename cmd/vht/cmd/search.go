@@ -5,7 +5,6 @@ import (
 	"github.com/gammazero/workerpool"
 	"github.com/hashicorp/vault/sdk/helper/jsonutil"
 	"github.com/ilijamt/vht/internal/vault"
-	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	"regexp"
 	"sort"
@@ -18,7 +17,7 @@ var searchCmd = &cobra.Command{
 	Short: "Search in the secrets data",
 	Long:  `Search through all the secrets to find out where the code is used`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		client, err := getVaultClient()
+		client, err := vault.Client()
 		if err != nil {
 			return err
 		}
@@ -41,9 +40,6 @@ var searchCmd = &cobra.Command{
 			return err
 		}
 
-		log.WithFields(log.Fields{
-			"root-path": rootPath,
-		}).Info("Processing paths")
 		paths, err = vault.Tree(rootPath, client)
 		if err != nil {
 			return err
@@ -51,10 +47,6 @@ var searchCmd = &cobra.Command{
 		if len(paths) == 0 {
 			return nil
 		}
-		log.WithFields(log.Fields{
-			"root-path": rootPath,
-			"total":     len(paths),
-		}).Info("Paths processing finished")
 
 		type FilteredData struct {
 			Path string
@@ -65,16 +57,14 @@ var searchCmd = &cobra.Command{
 		var muLock = &sync.Mutex{}
 		var task = func(path string) func() {
 			return func() {
-				log.WithField("path", path).Debugln("Processing")
-				defer log.WithField("path", path).Debugln("Finished")
 				secret, err := client.Logical().Read(path)
 				if err != nil {
-					log.WithField("path", path).Error(err)
+					fmt.Println(err)
 					return
 				}
 				j, err := jsonutil.EncodeJSON(secret.Data)
 				if err != nil {
-					log.WithField("path", path).Error(err)
+					fmt.Println(err)
 					return
 				}
 				if rDataFilter.MatchString(string(j)) {
@@ -87,10 +77,6 @@ var searchCmd = &cobra.Command{
 
 		wp := workerpool.New(int(concurrent))
 		filteredPaths := vault.FilterDataPaths(paths, rPathFilter)
-		log.WithFields(log.Fields{
-			"root-path": rootPath,
-			"total":     len(filteredPaths),
-		}).Info("Filtered paths processed")
 		for _, key := range filteredPaths {
 			wp.Submit(task(key))
 		}

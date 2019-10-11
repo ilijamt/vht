@@ -6,6 +6,8 @@ Requires that you have **VAULT_ADDR** set in your environment. For the token you
 
 Take care when using the **tree** and **search** functionality as if there are a lot of paths the process can take quite a while.
 
+**IMPORTANT**:  If you want to search on a KV v2 backend make sure you prefix your path with **secret/metadata**, where **secret** is the name of the backend you want to search in.
+
 ## Badges
 
 [![Release](https://img.shields.io/github/release/ilijamt/vht.svg?style=for-the-badge)](https://github.com/ilijamt/vht/releases/latest)

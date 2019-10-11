@@ -12,7 +12,7 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete a path recursively",
 	Long:  `Deletes a whole path recursively`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		client, err := getVaultClient()
+		client, err := vault.Client()
 		if err != nil {
 			return err
 		}
@@ -45,10 +45,7 @@ var deleteCmd = &cobra.Command{
 			confirmed = askForConfirmation()
 		}
 		if confirmed {
-			for _, path := range filteredPaths {
-				_, err := client.Logical().Delete(path)
-				fmt.Printf("%s path deleted: %t\n", path, err == nil)
-			}
+			return vault.DeletePaths(filteredPaths, client, cmd.OutOrStderr())
 		}
 		return err
 	},

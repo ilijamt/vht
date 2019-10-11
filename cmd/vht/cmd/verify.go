@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"fmt"
+	"github.com/ilijamt/vht/internal/vault"
 	"github.com/spf13/cobra"
 )
 
@@ -10,19 +10,11 @@ var verifyCmd = &cobra.Command{
 	Short: "Verify connection to Vault",
 	Long:  `Tries to verify that we can actually open a connection to vault`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		client, err := getVaultClient()
+		client, err := vault.Client()
 		if err != nil {
 			return err
 		}
-
-		response, err := client.Sys().Health()
-		if err != nil {
-			return err
-		}
-		fmt.Printf("Cluster name: %s\n", response.ClusterName)
-		fmt.Printf("Version: %s\n", response.Version)
-		fmt.Printf("Sealed: %t\n", response.Sealed)
-		return err
+		return vault.Health(cmd.OutOrStdout(), client)
 	},
 }
 
