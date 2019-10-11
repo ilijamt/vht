@@ -25,6 +25,7 @@ Usage:
   vht [command]
 
 Available Commands:
+  completion  Generates bash completion scripts
   delete      Delete a path recursively
   help        Help about any command
   search      Search in the secrets data
@@ -37,3 +38,25 @@ Flags:
 
 Use "vht [command] --help" for more information about a command.
 ```
+
+## Install
+
+### Pre-compiled binary
+
+#### manually
+
+Download the pre-compiled binaries from the [releases](https://github.com/ilijamt/vht/releases) page and copy to the desired location.
+
+#### macos (homebrew)
+
+```bash
+brew tap ilijamt/tap
+brew install vht
+```
+
+#### snapcraft
+
+```bash
+snap install vht
+```
+

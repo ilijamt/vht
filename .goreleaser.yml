@@ -61,8 +61,12 @@ snapcrafts:
       Simple tool that allows you to use vault in a way that's not possible from the UI or the command line,
       like recursive searching, tree and recursive delete.
     grade: stable
-    confinement: classic
+    confinement: strict
     publish: true
+    plugs:
+      personal-files:
+        read:
+          - $HOME/.vault-token
 
 brews:
   - github:
