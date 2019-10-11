@@ -63,3 +63,13 @@ snapcrafts:
     grade: stable
     confinement: classic
     publish: true
+
+brews:
+  - github:
+      owner: ilijamt
+      name: homebrew-tap
+    folder: Formula
+    homepage:  https://github.com/ilijamt/vht
+    description: A simple vault helper tool that simplifies the usage of Vault
+    test: |
+      system "#{bin}/vht version"
