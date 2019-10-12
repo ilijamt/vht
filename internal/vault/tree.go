@@ -4,33 +4,16 @@ import (
 	"errors"
 	"fmt"
 	"github.com/hashicorp/vault/api"
-	log "github.com/sirupsen/logrus"
-	"os"
 	"strings"
 )
 
-func init() {
-	// Log as JSON instead of the default ASCII formatter.
-	log.SetFormatter(&log.TextFormatter{})
-
-	// Output to stdout instead of the default stderr
-	// Can be any io.Writer, see below for File example
-	log.SetOutput(os.Stdout)
-
-	// Only log the warning severity or above.
-	log.SetLevel(log.WarnLevel)
-}
-
 func getPathDetails(path string, client *api.Client) (nodes, leafs []string, err error) {
-	log.WithField("path", path).Debug("Processing")
-	defer log.WithField("path", path).Debug("Finished")
 	var secret *api.Secret
 	secret, err = client.Logical().List(path)
 	if err != nil {
 		return
 	}
 	if secret == nil || secret.Data == nil || secret.Data["keys"] == nil {
-		log.WithField("path", path).Debug("No data found for path")
 		return []string{}, []string{}, nil
 	}
 
