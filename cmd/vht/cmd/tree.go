@@ -19,6 +19,7 @@ var treeCmd = &cobra.Command{
 		var paths []string
 		rootPath, _ := cmd.Flags().GetString("root-path")
 		filter, _ := cmd.Flags().GetString("path-filter")
+		serial, _ := cmd.Flags().GetBool("serial")
 		concurrent, err := cmd.Flags().GetInt8("concurrent")
 		if err != nil {
 			return err
@@ -27,8 +28,7 @@ var treeCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
-		paths, err = vault.Tree(rootPath, client, concurrent)
-		if err != nil {
+		if paths, err = getTree(serial, rootPath, client, concurrent); err != nil {
 			return err
 		}
 		if len(paths) == 0 {
@@ -46,5 +46,6 @@ func init() {
 	treeCmd.Flags().StringP("root-path", "r", "", "The root path to look into")
 	treeCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path")
 	treeCmd.Flags().Int8P("concurrent", "n", 10, "How many keys to process concurrently")
+	treeCmd.Flags().BoolP("serial", "s", false, "Do not use concurrency to build the path tree")
 	_ = cobra.MarkFlagRequired(treeCmd.Flags(), "root-path")
 }
