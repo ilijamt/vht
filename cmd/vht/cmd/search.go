@@ -40,7 +40,7 @@ var searchCmd = &cobra.Command{
 			return err
 		}
 
-		paths, err = vault.Tree(rootPath, client)
+		paths, err = vault.Tree(rootPath, client, concurrent)
 		if err != nil {
 			return err
 		}

@@ -20,11 +20,15 @@ var deleteCmd = &cobra.Command{
 		rootPath, _ := cmd.Flags().GetString("root-path")
 		filter, _ := cmd.Flags().GetString("path-filter")
 		force, _ := cmd.Flags().GetBool("force")
+		concurrent, err := cmd.Flags().GetInt8("concurrent")
+		if err != nil {
+			return err
+		}
 		rFilter, err := regexp.Compile(filter)
 		if err != nil {
 			return err
 		}
-		paths, err = vault.Tree(rootPath, client)
+		paths, err = vault.Tree(rootPath, client, concurrent)
 		if err != nil {
 			return err
 		}
@@ -56,5 +60,6 @@ func init() {
 	deleteCmd.Flags().StringP("root-path", "r", "", "The root path to look into")
 	deleteCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path")
 	deleteCmd.Flags().BoolP("force", "f", false, "Skip confirmation to remove the path")
+	deleteCmd.Flags().Int8P("concurrent", "n", 10, "How many keys to process concurrently")
 	_ = cobra.MarkFlagRequired(deleteCmd.Flags(), "root-path")
 }

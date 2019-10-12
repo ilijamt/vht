@@ -12,7 +12,7 @@ import (
 
 func TestTree(t *testing.T) {
 	t.Run("Invalid vault client", func(t *testing.T) {
-		paths, err := vault.Tree("", nil)
+		paths, err := vault.Tree("", nil, 10)
 		require.Error(t, err)
 		require.Empty(t, paths)
 	})
@@ -41,9 +41,12 @@ func TestTree(t *testing.T) {
 			}})
 		}
 
-		paths, err := vault.Tree(fmt.Sprintf("secret/metadata/%s", uroot.String()), client)
+		paths, err := vault.Tree(fmt.Sprintf("secret/metadata/%s", uroot.String()), client, 10)
 		require.NoError(t, err)
 		require.NotEmpty(t, paths)
+		for _, path := range paths {
+			fmt.Println(path)
+		}
 		require.Len(t, paths, 31)
 		require.NoError(t, vault.DeletePaths(paths, client, ioutil.Discard))
 	})
