@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/hashicorp/vault/api"
+	"github.com/ilijamt/vht/internal/vault"
 	"github.com/spf13/cobra"
 	"strings"
 )
@@ -14,6 +16,15 @@ var rootCmd = &cobra.Command{
 
 func Execute() error {
 	return rootCmd.Execute()
+}
+
+func getTree(serial bool, rootPath string, client *api.Client, concurrent int8) (paths []string, err error) {
+	if serial {
+		paths, err = vault.TreeSerial(rootPath, client)
+	} else {
+		paths, err = vault.Tree(rootPath, client, concurrent)
+	}
+	return paths, err
 }
 
 func askForConfirmation() bool {

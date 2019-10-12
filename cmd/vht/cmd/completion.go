@@ -18,7 +18,7 @@ To configure your bash shell to load completions for each session add to your ba
 . <(vht completion)
 `,
 	Run: func(cmd *cobra.Command, args []string) {
-		_ = rootCmd.GenBashCompletion(cmd.OutOrStdout());
+		_ = rootCmd.GenBashCompletion(cmd.OutOrStdout())
 	},
 }
 

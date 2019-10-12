@@ -23,6 +23,7 @@ var searchCmd = &cobra.Command{
 		}
 		var paths []string
 		rootPath, _ := cmd.Flags().GetString("root-path")
+		serial, _ := cmd.Flags().GetBool("serial")
 		concurrent, err := cmd.Flags().GetInt8("concurrent")
 		if err != nil {
 			return err
@@ -40,10 +41,10 @@ var searchCmd = &cobra.Command{
 			return err
 		}
 
-		paths, err = vault.Tree(rootPath, client)
-		if err != nil {
+		if paths, err = getTree(serial, rootPath, client, concurrent); err != nil {
 			return err
 		}
+
 		if len(paths) == 0 {
 			return nil
 		}
@@ -105,5 +106,6 @@ func init() {
 	searchCmd.Flags().StringP("data-filter", "f", ".*", "Regex to apply to the data")
 	searchCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path")
 	searchCmd.Flags().Int8P("concurrent", "n", 10, "How many keys to process concurrently")
+	searchCmd.Flags().BoolP("serial", "s", false, "Do not use concurrency to build the path tree")
 	_ = cobra.MarkFlagRequired(searchCmd.Flags(), "root-path")
 }
