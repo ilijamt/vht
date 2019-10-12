@@ -39,12 +39,8 @@ func TestDeletePaths(t *testing.T) {
 		}})
 		require.NoError(t, err)
 		require.NoError(t, vault.DeletePaths([]string{
-			"secret/data/test/1",
-			"secret/data/test/2",
-		}, client, ioutil.Discard))
-		require.NoError(t, vault.DeletePaths([]string{
-			"secret/metadata/data/test/1",
-			"secret/metadata/data/test/2",
+			"secret/metadata/test/1",
+			"secret/metadata/test/2",
 		}, client, ioutil.Discard))
 	})
 }
