@@ -24,6 +24,7 @@ var searchCmd = &cobra.Command{
 		var paths []string
 		rootPath, _ := cmd.Flags().GetString("root-path")
 		serial, _ := cmd.Flags().GetBool("serial")
+		dnd, _ := cmd.Flags().GetBool("dont-display-data")
 		concurrent, err := cmd.Flags().GetInt8("concurrent")
 		if err != nil {
 			return err
@@ -90,11 +91,13 @@ var searchCmd = &cobra.Command{
 
 		for _, secret := range data {
 			fmt.Printf("%s\n", secret.Path)
-			fmt.Println(strings.Repeat("-", len(secret.Path)))
-			for key, val := range secret.Data {
-				fmt.Printf("%s = %v\n", key, val)
+			if !dnd {
+				fmt.Println(strings.Repeat("-", len(secret.Path)))
+				for key, val := range secret.Data {
+					fmt.Printf("%s = %v\n", key, val)
+				}
+				fmt.Println()
 			}
-			fmt.Println()
 		}
 		return nil
 	},
@@ -104,6 +107,7 @@ func init() {
 	rootCmd.AddCommand(searchCmd)
 	searchCmd.Flags().StringP("root-path", "r", "", "The root path to look into")
 	searchCmd.Flags().StringP("data-filter", "f", ".*", "Regex to apply to the data")
+	searchCmd.Flags().BoolP("dont-display-data", "d", false, "Do not display the data dump")
 	searchCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path")
 	searchCmd.Flags().Int8P("concurrent", "n", 10, "How many keys to process concurrently")
 	searchCmd.Flags().BoolP("serial", "s", false, "Do not use concurrency to build the path tree")
