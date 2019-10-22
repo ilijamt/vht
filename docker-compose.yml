@@ -1,0 +1,10 @@
+version: "3.7"
+services:
+  vault:
+    image: vault:latest
+    cap_add:
+      - IPC_LOCK
+    environment:
+      VAULT_DEV_ROOT_TOKEN_ID: token
+    ports:
+      - 8200:8200
