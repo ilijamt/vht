@@ -15,7 +15,7 @@ package vault_test
 //
 //	t.Run("Invalid vault client", func(t *testing.T) {
 //		deleted, err := vault.CopyPath("/path", "/new-path", 10, nil, ioutil.Discard)
-//		require.Errorf(t, err, vault.ErrMissingVaultClient)
+//		require.EqualError(t, err, vault.ErrMissingVaultClient)
 //		require.EqualValues(t, 0, deleted)
 //	})
 //
@@ -24,10 +24,10 @@ package vault_test
 //		require.NoError(t, err)
 //		require.NotNil(t, client)
 //		deleted, err := vault.CopyPath("paths", "", 10, client, ioutil.Discard)
-//		require.Errorf(t, err, vault.ErrMissingPath)
+//		require.EqualError(t, err, vault.ErrMissingPath)
 //		require.EqualValues(t, 0, deleted)
 //		deleted, err = vault.CopyPath("", "paths", 10, client, ioutil.Discard)
-//		require.Errorf(t, err, vault.ErrMissingPath)
+//		require.EqualError(t, err, vault.ErrMissingPath)
 //		require.EqualValues(t, 0, deleted)
 //	})
 //

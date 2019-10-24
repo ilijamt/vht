@@ -9,7 +9,7 @@ import (
 
 func TestHealth(t *testing.T) {
 	t.Run("Invalid vault client", func(t *testing.T) {
-		require.Errorf(t, vault.Health(ioutil.Discard, nil), vault.ErrMissingVaultClient)
+		require.EqualError(t, vault.Health(ioutil.Discard, nil), vault.ErrMissingVaultClient)
 	})
 
 	t.Run("Healthy", func(t *testing.T) {

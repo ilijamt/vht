@@ -5,4 +5,5 @@ const (
 	ErrMissingVaultClient            = "missing vault client"
 	ErrMissingVaultAddrOrCredentials = "missing vault address or token"
 	ErrMissingPath                   = "missing path"
+	ErrInvalidPath                   = "invalid paths"
 )

@@ -14,7 +14,7 @@ func TestClient(t *testing.T) {
 		env.Store("VAULT_ADDR", "")
 		env.Store("VAULT_TOKEN", "")
 		client, err := vault.Client()
-		require.Errorf(t, err, vault.ErrMissingVaultAddrOrCredentials)
+		require.EqualError(t, err, vault.ErrMissingVaultAddrOrCredentials)
 		require.Nil(t, client)
 	})
 

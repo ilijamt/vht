@@ -11,7 +11,7 @@ import (
 func TestDeletePaths(t *testing.T) {
 	t.Run("Invalid vault client", func(t *testing.T) {
 		deleted, err := vault.DeletePaths([]string{}, 10, nil, ioutil.Discard)
-		require.Errorf(t, err, vault.ErrMissingVaultClient)
+		require.EqualError(t, err, vault.ErrMissingVaultClient)
 		require.EqualValues(t, deleted, 0)
 	})
 

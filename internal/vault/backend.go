@@ -3,7 +3,17 @@ package vault
 import (
 	"errors"
 	"github.com/hashicorp/vault/api"
+	"strings"
 )
+
+func MountPointFromPath(path string) (mountPoint string, err error) {
+	if path == "" {
+		return mountPoint, errors.New(ErrMissingPath)
+	}
+	parts := strings.Split(path, "/")
+	mountPoint = parts[0]
+	return
+}
 
 func IsKV(mountPoint string, client *api.Client) (yes bool, err error) {
 
