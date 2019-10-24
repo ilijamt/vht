@@ -12,3 +12,9 @@ func FilterDataPaths(paths []string, r *regexp.Regexp) (filtered []string) {
 	}
 	return
 }
+
+// FilterOnlyDataPaths
+func FilterOnlyDataPaths(paths []string) (filtered []string) {
+	r, _ := regexp.Compile(".*")
+	return FilterDataPaths(paths, r)
+}

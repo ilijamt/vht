@@ -10,8 +10,7 @@ import (
 func TestFilterDataPaths(t *testing.T) {
 
 	t.Run("Empty", func(t *testing.T) {
-		r, _ := regexp.Compile(".*")
-		assert.Empty(t, vault.FilterDataPaths([]string{}, r))
+		assert.Empty(t, vault.FilterOnlyDataPaths([]string{}))
 	})
 
 	t.Run("No path matches", func(t *testing.T) {

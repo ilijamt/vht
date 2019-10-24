@@ -51,7 +51,7 @@ var deleteCmd = &cobra.Command{
 			confirmed = askForConfirmation()
 		}
 		if confirmed {
-			return vault.DeletePaths(filteredPaths, client, cmd.OutOrStderr())
+			_, err = vault.DeletePaths(filteredPaths, concurrent, client, cmd.OutOrStderr())
 		}
 		return err
 	},

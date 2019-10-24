@@ -1,8 +1,6 @@
 package vault_test
 
 import (
-	"fmt"
-	"github.com/google/uuid"
 	"github.com/ilijamt/vht/internal/vault"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
@@ -38,37 +36,28 @@ func TestTree(t *testing.T) {
 			Test string
 			Time time.Time
 		}
-		uroot := uuid.New()
-		for i := 0; i < 10; i++ {
-			uuid1 := uuid.New()
-			uuid2 := uuid.New()
-			uuid3 := uuid.New()
-			uuid4 := uuid.New()
-			_, err = client.Logical().Write(fmt.Sprintf("secret/data/%s/%s", uroot.String(), uuid4.String()), map[string]interface{}{"data": Data{
-				Test: uuid1.String(),
-				Time: time.Now(),
-			}})
-			_, err = client.Logical().Write(fmt.Sprintf("secret/data/%s/%s/%s", uroot.String(), "root", uuid1.String()), map[string]interface{}{"data": Data{
-				Test: uuid1.String(),
-				Time: time.Now(),
-			}})
-			_, err = client.Logical().Write(fmt.Sprintf("secret/data/%s/root/%s/%s", uroot.String(), uuid2.String(), uuid3.String()), map[string]interface{}{"data": Data{
-				Test: uuid3.String(),
-				Time: time.Now(),
-			}})
+
+		var paths []string
+		for i := 0; i < 100; i++ {
+			path, err := writeRandomData("secret/data", client, 5)
+			require.NoError(t, err)
+			paths = append(paths, path)
 		}
 
-		paths, err := vault.Tree(fmt.Sprintf("secret/metadata/%s", uroot.String()), client, 2)
+		pathsTree, err := vault.Tree("secret/metadata", client, 10)
 		require.NoError(t, err)
-		require.NotEmpty(t, paths)
-		require.Len(t, paths, 41)
+		require.NotEmpty(t, pathsTree)
 
-		pathsSerial, err := vault.TreeSerial(fmt.Sprintf("secret/metadata/%s", uroot.String()), client)
+		pathsSerial, err := vault.TreeSerial("secret/metadata", client)
 		require.NoError(t, err)
 		require.NotEmpty(t, pathsSerial)
-		require.Len(t, pathsSerial, 41)
-		require.Equal(t, len(pathsSerial), len(paths))
-		require.NoError(t, vault.DeletePaths(paths, client, ioutil.Discard))
-		require.ElementsMatch(t, pathsSerial, paths)
+
+		require.Equal(t, len(pathsSerial), len(pathsTree))
+
+		deleted, err := vault.DeletePaths(pathsTree, 10, client, ioutil.Discard)
+		require.NoError(t, err)
+		require.EqualValues(t, deleted, len(pathsTree))
+		require.ElementsMatch(t, pathsSerial, pathsTree)
+		require.EqualValues(t, len(paths), len(vault.FilterOnlyDataPaths(pathsTree)))
 	})
 }

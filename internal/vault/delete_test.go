@@ -4,43 +4,45 @@ import (
 	"github.com/ilijamt/vht/internal/vault"
 	"github.com/stretchr/testify/require"
 	"io/ioutil"
+	"strings"
 	"testing"
-	"time"
 )
 
 func TestDeletePaths(t *testing.T) {
 	t.Run("Invalid vault client", func(t *testing.T) {
-		require.Errorf(t, vault.DeletePaths([]string{}, nil, ioutil.Discard), vault.ErrMissingVaultClient)
+		deleted, err := vault.DeletePaths([]string{}, 10, nil, ioutil.Discard)
+		require.Errorf(t, err, vault.ErrMissingVaultClient)
+		require.EqualValues(t, deleted, 0)
 	})
 
 	t.Run("Empty paths", func(t *testing.T) {
 		client, err := vault.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
-		require.NoError(t, vault.DeletePaths([]string{}, client, ioutil.Discard))
+		deleted, err := vault.DeletePaths([]string{}, 10, client, ioutil.Discard)
+		require.NoError(t, err)
+		require.EqualValues(t, deleted, 0)
 	})
 
 	t.Run("Valid paths", func(t *testing.T) {
 		client, err := vault.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
-		type Data struct {
-			Test int
-			Time time.Time
+
+		var paths []string
+		for i := 0; i < 100; i++ {
+			path, err := writeRandomData("secret/data", client, 3)
+			require.NoError(t, err)
+			paths = append(paths, path)
 		}
-		_, err = client.Logical().Write("secret/data/test/1", map[string]interface{}{"data": Data{
-			Test: 1,
-			Time: time.Now(),
-		}})
+
+		var deletePaths []string
+		for _, path := range paths {
+			deletePaths = append(deletePaths, strings.ReplaceAll(path, "secret/data", "secret/metadata"))
+		}
+
+		deleted, err := vault.DeletePaths(deletePaths, 10, client, ioutil.Discard)
 		require.NoError(t, err)
-		_, err = client.Logical().Write("secret/data/test/2", map[string]interface{}{"data": Data{
-			Test: 2,
-			Time: time.Now(),
-		}})
-		require.NoError(t, err)
-		require.NoError(t, vault.DeletePaths([]string{
-			"secret/metadata/test/1",
-			"secret/metadata/test/2",
-		}, client, ioutil.Discard))
+		require.EqualValues(t, len(deletePaths), deleted)
 	})
 }
