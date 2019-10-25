@@ -63,8 +63,10 @@ snapcrafts:
     grade: stable
     confinement: strict
     publish: true
+    license: MIT
     plugs:
-      personal-files:
+      dot-vault-token:
+        interface: personal-files
         read:
           - $HOME/.vault-token
 
