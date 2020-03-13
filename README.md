@@ -6,7 +6,7 @@ Requires that you have **VAULT_ADDR** set in your environment. For the token you
 
 Take care when using the **tree** and **search** functionality as if there are a lot of paths the process can take quite a while.
 
-**IMPORTANT**:  If you want to search on a KV v2 backend make sure you prefix your path with **secret/metadata**, where **secret** is the name of the backend you want to search in.
+**IMPORTANT**:  If you want to delete from a KV v2 backend make sure you prefix your path with **secret/metadata**, where **secret** is the name of the backend you want to delete in.
 
 ## Badges
 
@@ -58,5 +58,76 @@ brew install vht
 
 ```bash
 snap install vht
+```
+
+## Example 
+
+Create a docker instance
+```shell script
+docker run -d  --rm --cap-add=IPC_LOCK -p 1234:1234 --name vault -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:1234' vault
+```
+
+Now let's pre fill it with some data
+```shell script
+
+export VAULT_ADDR='http://127.0.0.1:1234'
+export VAULT_TOKEN=myroot
+vault secrets enable -version=2 -path kv2 kv
+vault secrets enable -version=1 -path kv1 kv
+export KV_DATE=$(date +%s)
+
+vht search -r kv1
+vht search -r kv2
+ 
+vault kv put kv1/abba timestamp=$KV_DATE value=abba
+vault kv put kv1/abba/caab/qaz timestamp=$KV_DATE value=qaz
+vault kv put kv1/qaz/abba/caab timestamp=$KV_DATE value=caab
+vault kv put kv1/abba/overwrite timestamp=$KV_DATE value=overwrite
+vault kv put kv1/abba/overwrite timestamp=$KV_DATE value=overriden
+
+vault kv put kv2/abba timestamp=$KV_DATE value=abba
+vault kv put kv2/abba/caab/qaz timestamp=$KV_DATE value=qaz
+vault kv put kv2/qaz/abba/caab timestamp=$KV_DATE value=caab
+vault kv put kv2/abba/overwrite timestamp=$KV_DATE value=overwrite
+vault kv put kv2/abba/overwrite timestamp=$KV_DATE value=overriden
+```
+
+Let's see it in action
+
+```
+$ vht search -r kv1 -k "q.z"
+kv1/abba/caab/qaz
+-----------------
+timestamp = 1584114901
+value = qaz
+
+kv1/qaz/abba/caab
+-----------------
+timestamp = 1584114901
+value = caab
+
+$ vht search -r kv2 -k "q.z" -f "c*b"
+kv2/qaz/abba/caab
+-----------------
+timestamp = 1584114901
+value = caab
+
+$ vht search -r kv2 -k "q.z"
+kv2/abba/caab/qaz
+-----------------
+timestamp = 1584114901
+value = qaz
+
+kv2/qaz/abba/caab
+-----------------
+timestamp = 1584114901
+value = caab
+
+$ vht search -r kv1 -k "q.z" -f "c*b"
+kv1/qaz/abba/caab
+-----------------
+timestamp = 1584114901
+value = caab
+
 ```
 

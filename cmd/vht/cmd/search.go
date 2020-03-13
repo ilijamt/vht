@@ -30,6 +30,12 @@ var searchCmd = &cobra.Command{
 			return err
 		}
 
+		mountPoint := strings.Split(rootPath, "/")[0] + "/"
+		isv2, err := vault.IsV2(mountPoint, client)
+		if err != nil {
+			return err
+		}
+
 		dataFilter, _ := cmd.Flags().GetString("data-filter")
 		rDataFilter, err := regexp.Compile(dataFilter)
 		if err != nil {
@@ -42,6 +48,10 @@ var searchCmd = &cobra.Command{
 			return err
 		}
 
+		// we need to assemble the path if we are searching in a v2 kv store
+		if isv2 {
+			rootPath = strings.ReplaceAll(mountPoint+"/metadata/"+strings.Join(strings.Split(rootPath, "/")[1:], "/"), "//", "/")
+		}
 		if paths, err = getTree(serial, rootPath, client, concurrent); err != nil {
 			return err
 		}
@@ -51,29 +61,45 @@ var searchCmd = &cobra.Command{
 		}
 
 		type FilteredData struct {
-			Path string
-			Data map[string]interface{}
+			Path     string
+			Data     map[string]interface{}
+			Metadata map[string]interface{}
 		}
 
 		var data []FilteredData
 		var muLock = &sync.Mutex{}
 		var task = func(path string) func() {
 			return func() {
-				secret, err := client.Logical().Read(path)
+				var pathv = path
+				if isv2 {
+					path = strings.ReplaceAll(path, "/metadata/", "/")
+					parts := strings.Split(path, "/")
+					pathv = parts[0] + "/data/" + strings.Join(parts[1:], "/")
+				}
+				secret, err := client.Logical().Read(pathv)
 				if err != nil {
 					fmt.Println(err)
 					return
 				}
+
 				j, err := jsonutil.EncodeJSON(secret.Data)
 				if err != nil {
 					fmt.Println(err)
 					return
 				}
+
 				if rDataFilter.MatchString(string(j)) {
 					muLock.Lock()
-					data = append(data, FilteredData{Path: path, Data: secret.Data})
+					var payload = secret.Data
+					var metadata map[string]interface{}
+					if isv2 {
+						payload = secret.Data["data"].(map[string]interface{})
+						metadata = secret.Data["metadata"].(map[string]interface{})
+					}
+					data = append(data, FilteredData{Path: path, Data: payload, Metadata: metadata})
 					muLock.Unlock()
 				}
+
 			}
 		}
 
