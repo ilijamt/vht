@@ -1,46 +1,51 @@
 package vault
 
 import (
-	"errors"
-	"fmt"
 	"github.com/hashicorp/vault/api"
-	"io/ioutil"
-	"net/http"
+	"github.com/ilijamt/vht/internal/config"
+	"github.com/pkg/errors"
 	"os"
-	"os/user"
 	"time"
 )
 
-func getVaultCredentialsFromEnvironment() (addr, token string, err error) {
-	addr = os.Getenv("VAULT_ADDR")
-	if token = os.Getenv("VAULT_TOKEN"); token == "" {
-		var data []byte
-		usr, _ := user.Current()
-		dir := usr.HomeDir
-		data, err = ioutil.ReadFile(fmt.Sprintf("%s/.vault-token", dir))
+func Client() (client *api.Client, err error) {
+	cfg := api.DefaultConfig()
+	cfg.HttpClient.Timeout = 10 * time.Second
+
+	if err := cfg.ReadEnvironment(); err != nil {
+		return nil, errors.Wrap(err, "failed to read environment")
+	}
+
+	// Build the client
+	client, err = api.NewClient(cfg)
+	if err != nil {
+		return nil, errors.Wrap(err, "failed to create client")
+	}
+
+	// Turn off retries on the CLI
+	if os.Getenv(api.EnvVaultMaxRetries) == "" {
+		client.SetMaxRetries(0)
+	}
+
+	// Get the token if it came in from the environment
+	token := client.Token()
+
+	// If we don't have a token, check the token helper
+	if token == "" {
+		helper, err := config.DefaultTokenHelper()
 		if err != nil {
-			token = ""
-		} else {
-			token = string(data)
+			return nil, errors.Wrap(err, "failed to get token helper")
+		}
+		token, err = helper.Get()
+		if err != nil {
+			return nil, errors.Wrap(err, "failed to get token from token helper")
 		}
 	}
-	if addr == "" || token == "" {
-		err = errors.New(ErrMissingVaultAddrOrCredentials)
-	}
-	return
-}
 
-func Client() (client *api.Client, err error) {
-	vaultAddr, vaultToken, err := getVaultCredentialsFromEnvironment()
-	if err != nil {
-		return nil, err
+	// Set the token
+	if token != "" {
+		client.SetToken(token)
 	}
-	var httpClient = &http.Client{
-		Timeout: 10 * time.Second,
-	}
-	if client, err = api.NewClient(&api.Config{Address: vaultAddr, HttpClient: httpClient}); err != nil {
-		return nil, err
-	}
-	client.SetToken(vaultToken)
+
 	return client, err
 }

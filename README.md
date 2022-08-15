@@ -2,7 +2,17 @@
 
 A small tool written in go when you need to search your vault.
 
-Requires that you have **VAULT_ADDR** set in your environment. For the token you can either have **VAULT_TOKEN** set or if not set it reads from **~/.vault-token** for the token.
+Requires that you have **VAULT_ADDR** set in your environment. 
+
+Token will be set from: 
+- **VAULT_TOKEN**
+- **~/.vault-token**
+- Using a token helper as defined in **~/.vault**
+
+If you want to use the token helper then you have to login first by using `vault login` so you are logged into the system. You can check use this [vault-token-helper](https://github.com/ilijamt/vault-token-helper)
+
+
+All the environment variables that work with the Vault client will work with this tool as well.
 
 Take care when using the **tree** and **search** functionality as if there are a lot of paths the process can take quite a while.
 
