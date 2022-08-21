@@ -58,7 +58,7 @@ func Tree(rootPath string, client *api.Client, concurrency int8) (paths []string
 
 	// Iterate over the nodes so we can get the new data
 	for _, path := range nodes {
-		newPath := strings.ReplaceAll(fmt.Sprintf("%s", path), "//", "/")
+		newPath := strings.ReplaceAll(path, "//", "/")
 		if err = sem.Acquire(context.Background(), 1); err != nil {
 			return []string{}, err
 		}
@@ -97,7 +97,7 @@ func TreeSerial(rootPath string, client *api.Client) (paths []string, err error)
 
 	// Iterate over the nodes so we can get the new data
 	for _, path := range nodes {
-		newPath := strings.ReplaceAll(fmt.Sprintf("%s", path), "//", "/")
+		newPath := strings.ReplaceAll(path, "//", "/")
 		pths, err := TreeSerial(newPath, client)
 		if err != nil {
 			return []string{}, err

@@ -1,0 +1,60 @@
+name: Go
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - "master"
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        go: [1.19]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    services:
+      vault:
+        image: vault:1.11.2
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: token
+          VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+          VAULT_TOKEN: token
+          VAULT_ADDR: http://127.0.0.1:8200
+        options: >-
+          --cap-add=IPC_LOCK
+          --health-cmd "vault status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 8200:8200
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go ${{ matrix.go }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go }}
+          cache: true
+      - name: Display Go version
+        run: go version
+      - name: Install govulncheck@latest
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+      - name: Downloading modules
+        run: go mod download
+      - name: Scanning for dependencies with known vulnerabilities
+        run: govulncheck -v ./...
+      - name: Build
+        run: go build -v ./cmd/vht
+      - name: Test
+        run: |
+          export VAULT_ADDR="http://$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q)):8200"
+          go test -v ./...
+        env:
+          VAULT_TOKEN: token

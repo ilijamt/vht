@@ -3,9 +3,8 @@ package vault_test
 import (
 	"github.com/ilijamt/vht/internal/vault"
 	"github.com/stretchr/testify/require"
-	"io/ioutil"
+	"io"
 	"testing"
-	"time"
 )
 
 func TestTree(t *testing.T) {
@@ -32,10 +31,6 @@ func TestTree(t *testing.T) {
 		client, err := vault.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
-		type Data struct {
-			Test string
-			Time time.Time
-		}
 
 		var paths []string
 		for i := 0; i < 100; i++ {
@@ -54,7 +49,7 @@ func TestTree(t *testing.T) {
 
 		require.Equal(t, len(pathsSerial), len(pathsTree))
 
-		deleted, err := vault.DeletePaths(pathsTree, 10, client, ioutil.Discard)
+		deleted, err := vault.DeletePaths(pathsTree, 10, client, io.Discard)
 		require.NoError(t, err)
 		require.EqualValues(t, deleted, len(pathsTree))
 		require.ElementsMatch(t, pathsSerial, pathsTree)
