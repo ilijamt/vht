@@ -5,10 +5,14 @@ on:
     branches:
       - main
       - master
+    paths:
+      - "**.go"
   pull_request:
     branches:
       - master
       - main
+    paths:
+      - "**.go"
 
 permissions:
   contents: read

@@ -1,13 +1,18 @@
-name: Go
+name: build & test
 
 on:
   push:
     branches:
       - main
       - master
+    paths:
+      - "**.go"
   pull_request:
     branches:
-      - "master"
+      - main
+      - master
+    paths:
+      - "**.go"
 
 permissions:
   contents: read
