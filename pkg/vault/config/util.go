@@ -1,6 +1,6 @@
 package config
 
-import "github.com/ilijamt/vht/internal/token"
+import "github.com/ilijamt/vht/pkg/vault/token"
 
 // DefaultTokenHelper returns the token helper that is configured for Vault.
 func DefaultTokenHelper() (token.TokenHelper, error) {

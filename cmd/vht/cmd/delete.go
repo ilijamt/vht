@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 	"github.com/spf13/cobra"
 	"regexp"
 )
@@ -12,7 +13,7 @@ var deleteCmd = &cobra.Command{
 	Short: "Delete a path recursively",
 	Long:  `Deletes a whole path recursively`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		if err != nil {
 			return err
 		}

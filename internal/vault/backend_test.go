@@ -2,6 +2,7 @@ package vault_test
 
 import (
 	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
@@ -34,7 +35,7 @@ func TestIsV2(t *testing.T) {
 	})
 
 	t.Run("No mount point", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		yes, err := vault.IsV2("", client)
@@ -43,7 +44,7 @@ func TestIsV2(t *testing.T) {
 	})
 
 	t.Run("KV is version 2", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		yes, err := vault.IsV2("secret/", client)
@@ -52,7 +53,7 @@ func TestIsV2(t *testing.T) {
 	})
 
 	t.Run("Non existing mount point", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		yes, err := vault.IsV2("missing/", client)
@@ -70,7 +71,7 @@ func TestIsKV(t *testing.T) {
 	})
 
 	t.Run("No mount point", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		yes, err := vault.IsKV("", client)
@@ -79,7 +80,7 @@ func TestIsKV(t *testing.T) {
 	})
 
 	t.Run("Should be KV engine", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		yes, err := vault.IsKV("secret/", client)
@@ -89,7 +90,7 @@ func TestIsKV(t *testing.T) {
 	})
 
 	t.Run("Should not be KV engine", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		yes, err := vault.IsV2("cubbyhole/", client)
@@ -98,7 +99,7 @@ func TestIsKV(t *testing.T) {
 	})
 
 	t.Run("Non existing mount point", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		yes, err := vault.IsKV("missing/", client)

@@ -2,6 +2,7 @@ package vault_test
 
 import (
 	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 	"github.com/stretchr/testify/require"
 	"io"
 	"testing"
@@ -10,7 +11,7 @@ import (
 func TestTree(t *testing.T) {
 
 	t.Run("Invalid path", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		paths, err := vault.TreeSerial("invalid/test", client)
@@ -28,7 +29,7 @@ func TestTree(t *testing.T) {
 	})
 
 	t.Run("Listing a path", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 

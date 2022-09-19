@@ -2,7 +2,7 @@ package vault
 
 import (
 	"github.com/hashicorp/vault/api"
-	"github.com/ilijamt/vht/internal/config"
+	"github.com/ilijamt/vht/pkg/vault/config"
 	"github.com/pkg/errors"
 	"os"
 	"time"

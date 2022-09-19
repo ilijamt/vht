@@ -5,6 +5,7 @@ import (
 	"github.com/gammazero/workerpool"
 	"github.com/hashicorp/vault/sdk/helper/jsonutil"
 	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 	"github.com/spf13/cobra"
 	"regexp"
 	"sort"
@@ -17,7 +18,7 @@ var searchCmd = &cobra.Command{
 	Short: "Search in the secrets data",
 	Long:  `Search through all the secrets to find out where the code is used`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		if err != nil {
 			return err
 		}

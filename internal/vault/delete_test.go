@@ -2,6 +2,7 @@ package vault_test
 
 import (
 	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 	"github.com/stretchr/testify/require"
 	"io"
 	"strings"
@@ -16,7 +17,7 @@ func TestDeletePaths(t *testing.T) {
 	})
 
 	t.Run("Empty paths", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		deleted, err := vault.DeletePaths([]string{}, 10, client, io.Discard)
@@ -25,7 +26,7 @@ func TestDeletePaths(t *testing.T) {
 	})
 
 	t.Run("Valid paths", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 

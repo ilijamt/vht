@@ -2,6 +2,7 @@ package vault_test
 
 import (
 	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 	"github.com/stretchr/testify/require"
 	"io"
 	"testing"
@@ -13,7 +14,7 @@ func TestHealth(t *testing.T) {
 	})
 
 	t.Run("Healthy", func(t *testing.T) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		require.NoError(t, err)
 		require.NotNil(t, client)
 		require.NoError(t, vault.Health(io.Discard, client))

@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 	"github.com/spf13/cobra"
 	"regexp"
 	"strings"
@@ -13,7 +14,7 @@ var treeCmd = &cobra.Command{
 	Short: "Print out a list of all the secrets in a path",
 	Long:  `Print out a list of all the secrets in a path recursively`,
 	RunE: func(cmd *cobra.Command, args []string) (err error) {
-		client, err := vault.Client()
+		client, err := v.Client()
 		if err != nil {
 			return err
 		}

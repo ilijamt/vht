@@ -1,7 +1,7 @@
 package vault_test
 
 import (
-	"github.com/ilijamt/vht/internal/vault"
+	"github.com/ilijamt/vht/pkg/vault"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
