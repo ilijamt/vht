@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"io/ioutil"
 	"os"
 
 	"github.com/hashicorp/hcl"
@@ -14,9 +15,9 @@ const (
 	// DefaultConfigPath is the default path to the configuration file
 	DefaultConfigPath = "~/.vault"
 
-	// PathEnv is the environment variable that can be used to
+	// ConfigPathEnv is the environment variable that can be used to
 	// override where the Vault configuration is.
-	PathEnv = "VAULT_CONFIG_PATH"
+	ConfigPathEnv = "VAULT_CONFIG_PATH"
 )
 
 // DefaultConfig is the CLI configuration for Vault that can be specified via
@@ -48,7 +49,7 @@ func LoadConfig(path string) (*DefaultConfig, error) {
 	if path == "" {
 		path = DefaultConfigPath
 	}
-	if v := os.Getenv(PathEnv); v != "" {
+	if v := os.Getenv(ConfigPathEnv); v != "" {
 		path = v
 	}
 
@@ -58,7 +59,7 @@ func LoadConfig(path string) (*DefaultConfig, error) {
 		return nil, fmt.Errorf("error expanding config path %q: %w", path, err)
 	}
 
-	contents, err := os.ReadFile(path)
+	contents, err := ioutil.ReadFile(path)
 	if err != nil && !os.IsNotExist(err) {
 		return nil, err
 	}
