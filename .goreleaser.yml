@@ -28,24 +28,28 @@ builds:
       - linux
       - darwin
       - windows
+    flags:
+      - -trimpath
+    mod_timestamp: '{{ .CommitTimestamp }}'
 
 checksum:
-  name_template: '{{ .ProjectName }}_checksums.txt'
+  name_template: "checksums.txt"
+
+snapshot:
+  name_template: "{{ incpatch .Version }}-next"
+
 changelog:
   sort: asc
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
       - Merge pull request
       - Merge branch
 
 archives:
-  - name_template: '{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-    replacements:
-      386: i386
-      amd64: x86_64
-    format_overrides:
+  - format_overrides:
       - goos: windows
         format: zip
 
@@ -53,22 +57,6 @@ release:
   github:
     owner: ilijamt
     name: vht
-
-#snapcrafts:
-#  - name_template: '{{ .ProjectName }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}'
-#    summary: A simple vault helper tool that simplifies the usage of Vault
-#    description: |
-#      Simple tool that allows you to use vault in a way that's not possible from the UI or the command line,
-#      like recursive searching, tree and recursive delete.
-#    grade: stable
-#    confinement: strict
-#    publish: true
-#    license: MIT
-#    plugs:
-#      dot-vault-token:
-#        interface: personal-files
-#        read:
-#          - $HOME/.vault-token
 
 brews:
   - tap:
