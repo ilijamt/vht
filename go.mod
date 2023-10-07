@@ -1,6 +1,6 @@
 module github.com/ilijamt/vht
 
-go 1.18
+go 1.21
 
 require (
 	github.com/gammazero/workerpool v1.1.3
