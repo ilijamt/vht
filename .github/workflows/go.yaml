@@ -1,0 +1,52 @@
+name: Go
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      vault:
+        image: hashicorp/vault:1.15
+        env:
+          VAULT_DEV_ROOT_TOKEN_ID: token
+          VAULT_DEV_LISTEN_ADDRESS: 0.0.0.0:8200
+          VAULT_TOKEN: token
+          VAULT_ADDR: http://127.0.0.1:8200
+        options: >-
+          --cap-add=IPC_LOCK
+          --health-cmd "vault status"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 8200:8200
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Go
+        uses: actions/setup-go@v4
+        with:
+          go-version-file: 'go.mod'
+          cache: true
+      - name: Display Go version
+        run: go version
+      - name: Build
+        run: go build -v ./cmd/vht
+      - name: Test
+        run: |
+          export VAULT_ADDR="http://$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' $(docker ps -q)):8200"
+          go test -v -json ./... | tee -a go-test-${{ matrix.go }}.json
+        env:
+          VAULT_TOKEN: token
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./coverage.out
+          flags: unittests
