@@ -59,7 +59,7 @@ release:
     name: vht
 
 brews:
-  - tap:
+  - repository:
       owner: ilijamt
       name: homebrew-tap
     folder: Formula
