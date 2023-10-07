@@ -1,4 +1,9 @@
 # Vault helper tool
+[![Go Report Card](https://goreportcard.com/badge/github.com/ilijamt/vht)](https://goreportcard.com/report/github.com/ilijamt/vht)
+[![Codecov](https://img.shields.io/codecov/c/gh/ilijamt/vht)](https://app.codecov.io/gh/ilijamt/vht)
+[![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/ilijamt/vht)](go.mod)
+[![GitHub](https://img.shields.io/github/license/ilijamt/vht)](LICENSE)
+[![Release](https://img.shields.io/github/release/ilijamt/vht.svg)](https://github.com/ilijamt/vht/releases/latest)
 
 A small tool written in go when you need to search your vault.
 
@@ -11,17 +16,11 @@ Token will be set from:
 
 If you want to use the token helper then you have to login first by using `vault login` so you are logged into the system. You can check use this [vault-token-helper](https://github.com/ilijamt/vault-token-helper)
 
-
 All the environment variables that work with the Vault client will work with this tool as well.
 
 Take care when using the **tree** and **search** functionality as if there are a lot of paths the process can take quite a while.
 
 **IMPORTANT**:  If you want to delete from a KV v2 backend make sure you prefix your path with **secret/metadata**, where **secret** is the name of the backend you want to delete in.
-
-## Badges
-
-[![Release](https://img.shields.io/github/release/ilijamt/vht.svg?style=for-the-badge)](https://github.com/ilijamt/vht/releases/latest)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=for-the-badge)](/LICENSE.md)
 
 ## Help
 
