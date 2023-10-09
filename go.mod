@@ -5,9 +5,9 @@ go 1.21
 require (
 	github.com/gammazero/workerpool v1.1.3
 	github.com/google/uuid v1.3.1
-	github.com/hashicorp/hcl v1.0.1-vault-5
+	github.com/hashicorp/hcl v1.0.1-vault
 	github.com/hashicorp/vault/api v1.10.0
-	github.com/hashicorp/vault/sdk v0.10.0
+	github.com/hashicorp/vault/sdk v0.9.0
 	github.com/mitchellh/cli v1.1.5
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/natefinch/atomic v1.0.1
