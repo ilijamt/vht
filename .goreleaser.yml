@@ -67,3 +67,20 @@ brews:
     description: A simple vault helper tool that simplifies the usage of Vault
     test: |
       system "#{bin}/vht version"
+
+# chocolateys:
+#   - name: vht
+#     owners: Ilija Matoski
+#     title: Vault Helper Tool
+#     authors: Ilija Matoski
+#     project_url: https://github.com/ilijamt/vht
+#     project_source_url: https://github.com/ilijamt/vht
+#     bug_tracker_url: https://github.com/ilijamt/vht/issues
+#     docs_url: https://github.com/ilijamt/vht/blob/main/README.md
+#     summary: A simple vault helper tool that simplifies the usage of Vault
+#     description: |
+#       {{ .ProjectName }} installer package
+#       A simple vault helper tool that simplifies the usage of Vault.
+#       Allows you to search and find data in Vault.
+#     api_key: "{{ .Env.CHOCOLATEY_API_KEY }}"
+#     source_repo: "https://push.chocolatey.org"
