@@ -63,12 +63,6 @@ brew tap ilijamt/tap
 brew install vht
 ```
 
-#### snapcraft
-
-```bash
-snap install vht
-```
-
 ## Example 
 
 Create a docker instance
