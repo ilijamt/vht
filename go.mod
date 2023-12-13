@@ -4,7 +4,7 @@ go 1.21
 
 require (
 	github.com/gammazero/workerpool v1.1.3
-	github.com/google/uuid v1.4.0
+	github.com/google/uuid v1.5.0
 	github.com/hashicorp/hcl v1.0.1-vault
 	github.com/hashicorp/vault/api v1.10.0
 	github.com/hashicorp/vault/sdk v0.9.0
