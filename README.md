@@ -21,6 +21,7 @@ All the environment variables that work with the Vault client will work with thi
 Take care when using the **tree** and **search** functionality as if there are a lot of paths the process can take quite a while.
 
 **IMPORTANT**: If you want to delete from a KV v2 backend make sure you prefix your path with **secret/metadata**, where **secret** is the name of the backend you want to delete in.
+
 **IMPORTANT**: The input for searching is based on https://pkg.go.dev/regexp/syntax.
 
 ## Help
