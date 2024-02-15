@@ -20,7 +20,8 @@ All the environment variables that work with the Vault client will work with thi
 
 Take care when using the **tree** and **search** functionality as if there are a lot of paths the process can take quite a while.
 
-**IMPORTANT**:  If you want to delete from a KV v2 backend make sure you prefix your path with **secret/metadata**, where **secret** is the name of the backend you want to delete in.
+**IMPORTANT**: If you want to delete from a KV v2 backend make sure you prefix your path with **secret/metadata**, where **secret** is the name of the backend you want to delete in.
+**IMPORTANT**: The input for searching is based on https://pkg.go.dev/regexp/syntax.
 
 ## Help
 
@@ -70,7 +71,7 @@ Create a docker instance
 docker run -d  --rm --cap-add=IPC_LOCK -p 1234:1234 --name vault -e 'VAULT_DEV_ROOT_TOKEN_ID=myroot' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:1234' vault
 ```
 
-Now let's pre fill it with some data
+Now let's pre-fill it with some data
 ```shell script
 
 export VAULT_ADDR='http://127.0.0.1:1234'
@@ -134,3 +135,44 @@ value = caab
 
 ```
 
+### Case-insensitive searching
+
+The input is based on https://pkg.go.dev/regexp/syntax so you can define what ever input you want/need to do the searching.
+
+```shell
+❯ docker run -d  --rm --cap-add=IPC_LOCK -p 8200:8200 --name vault -e 'VAULT_DEV_ROOT_TOKEN_ID=token' -e 'VAULT_DEV_LISTEN_ADDRESS=0.0.0.0:8200' vault
+
+❯ export VAULT_ADDR='http://127.0.0.1:8200'
+❯ export VAULT_TOKEN=token
+
+❯ vault secrets enable -version=2 -path kv2 kv
+Success! Enabled the kv secrets engine at: kv2/
+
+❯ export KV_DATE=$(date +%s) 
+❯ vault kv put kv2/aBbA timestamp=$KV_DATE value=abba
+❯ vault kv put kv2/abba/cAAb/qaz timestamp=$KV_DATE value=qaz
+❯ vault kv put kv2/new value=aBbA
+❯ vault kv put kv2/nEw value=abba
+
+❯ vht tree -r kv2
+kv2/aBbA
+kv2/nEw
+kv2/new
+kv2/abba/cAAb/qaz
+
+❯ vht tree -r kv2 -k 'abba'
+kv2/abba/cAAb/qaz
+
+❯ vht tree -r kv2 -k '(?i)abba'
+kv2/aBbA
+kv2/abba/cAAb/qaz
+
+❯ vht search -r kv2 -d -f '(?i)abba'
+kv2/aBbA
+kv2/nEw
+kv2/new
+
+❯ vht search -r kv2 -d -f 'abba'
+kv2/aBbA
+kv2/nEw
+```
