@@ -2,11 +2,13 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/ilijamt/vht/internal/vault"
-	v "github.com/ilijamt/vht/pkg/vault"
-	"github.com/spf13/cobra"
 	"regexp"
 	"strings"
+
+	"github.com/spf13/cobra"
+
+	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 )
 
 var treeCmd = &cobra.Command{
@@ -54,7 +56,7 @@ var treeCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(treeCmd)
 	treeCmd.Flags().StringP("root-path", "r", "", "The root path to look into")
-	treeCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path")
+	treeCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path, based on https://pkg.go.dev/regexp/syntax")
 	treeCmd.Flags().Int8P("concurrent", "n", 10, "How many keys to process concurrently")
 	treeCmd.Flags().BoolP("serial", "s", false, "Do not use concurrency to build the path tree")
 	_ = cobra.MarkFlagRequired(treeCmd.Flags(), "root-path")

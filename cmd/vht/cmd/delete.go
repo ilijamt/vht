@@ -2,10 +2,12 @@ package cmd
 
 import (
 	"fmt"
+	"regexp"
+
+	"github.com/spf13/cobra"
+
 	"github.com/ilijamt/vht/internal/vault"
 	v "github.com/ilijamt/vht/pkg/vault"
-	"github.com/spf13/cobra"
-	"regexp"
 )
 
 var deleteCmd = &cobra.Command{
@@ -61,7 +63,7 @@ var deleteCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(deleteCmd)
 	deleteCmd.Flags().StringP("root-path", "r", "", "The root path to look into")
-	deleteCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path")
+	deleteCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path, based on https://pkg.go.dev/regexp/syntax")
 	deleteCmd.Flags().BoolP("force", "f", false, "Skip confirmation to remove the path")
 	deleteCmd.Flags().Int8P("concurrent", "n", 10, "How many keys to process concurrently")
 	deleteCmd.Flags().BoolP("serial", "s", false, "Do not use concurrency to build the path tree")

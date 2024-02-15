@@ -2,15 +2,17 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/gammazero/workerpool"
-	"github.com/hashicorp/vault/sdk/helper/jsonutil"
-	"github.com/ilijamt/vht/internal/vault"
-	v "github.com/ilijamt/vht/pkg/vault"
-	"github.com/spf13/cobra"
 	"regexp"
 	"sort"
 	"strings"
 	"sync"
+
+	"github.com/gammazero/workerpool"
+	"github.com/hashicorp/vault/sdk/helper/jsonutil"
+	"github.com/spf13/cobra"
+
+	"github.com/ilijamt/vht/internal/vault"
+	v "github.com/ilijamt/vht/pkg/vault"
 )
 
 var searchCmd = &cobra.Command{
@@ -133,9 +135,9 @@ var searchCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(searchCmd)
 	searchCmd.Flags().StringP("root-path", "r", "", "The root path to look into")
-	searchCmd.Flags().StringP("data-filter", "f", ".*", "Regex to apply to the data")
+	searchCmd.Flags().StringP("data-filter", "f", ".*", "Regex to apply to the data, based on https://pkg.go.dev/regexp/syntax")
 	searchCmd.Flags().BoolP("dont-display-data", "d", false, "Do not display the data dump")
-	searchCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path")
+	searchCmd.Flags().StringP("path-filter", "k", ".*", "Regex to apply to the path, based on https://pkg.go.dev/regexp/syntax")
 	searchCmd.Flags().Int8P("concurrent", "n", 10, "How many keys to process concurrently")
 	searchCmd.Flags().BoolP("serial", "s", false, "Do not use concurrency to build the path tree")
 	_ = cobra.MarkFlagRequired(searchCmd.Flags(), "root-path")
