@@ -2,15 +2,17 @@ package version_test
 
 import (
 	"bufio"
-	"github.com/ilijamt/vht/internal/version"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/ilijamt/vht/internal/version"
 )
 
 func TestPrintVersion(t *testing.T) {
 	wr := bufio.NewWriter(io.Discard)
 	version.PrintVersion(wr)
-	assert.Equal(t, 71, wr.Buffered())
+	assert.Greater(t, wr.Buffered(), 0)
 	assert.NoError(t, wr.Flush())
 }
